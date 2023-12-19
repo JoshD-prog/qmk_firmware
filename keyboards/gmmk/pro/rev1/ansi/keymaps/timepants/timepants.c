@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "mike1808.h"
+#include "timepants.h"
 
 #if (__has_include("secrets.h") && !defined(NO_SECRETS))
 #    include "secrets.h"
@@ -27,7 +27,7 @@ static const char *const secrets[] = {"", "\n", "\n", "\n", "", "", "", ""};
 
 bool process_record_secrets(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case KC_SECRET_1 ... KC_SECRET_5:  // Secrets!  Externally defined strings, not stored in repo
+        case KC_SECRET_1 ... KC_SECRET_8: // Secrets!  Externally defined strings, not stored in repo
             if (!record->event.pressed) {
                 clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
                 send_string_with_delay(secrets[keycode - KC_SECRET_1], MACRO_TIMER);
@@ -41,13 +41,13 @@ bool process_record_secrets(uint16_t keycode, keyrecord_t *record) {
 void suspend_power_down_user(void) {
 #ifdef RGB_MATRIX_ENABLE
     rgb_matrix_set_suspend_state(true);
-#endif  // RGB_MATRIX_ENABLE
+#endif // RGB_MATRIX_ENABLE
 }
 
 void suspend_wakeup_init_user(void) {
 #ifdef RGB_MATRIX_ENABLE
     rgb_matrix_set_suspend_state(false);
-#endif  // RGB_MATRIX_ENABLE
+#endif // RGB_MATRIX_ENABLE
 }
 
 #ifdef RGB_MATRIX_ENABLE
@@ -55,7 +55,7 @@ bool rgb_matrix_indicators_advanced_keymap(uint8_t led_min, uint8_t led_max) {
     // Turn on sideglow when CAPS LOCK is activated
     if (host_keyboard_led_state().caps_lock) {
         HSV hsv = {CAPS_LOCK_COLOR};
-        hsv.v = rgb_matrix_get_val();
+        hsv.v   = rgb_matrix_get_val();
         RGB rgb = hsv_to_rgb(hsv);
 
         for (uint8_t i = led_min; i < led_max; i++) {
@@ -66,4 +66,4 @@ bool rgb_matrix_indicators_advanced_keymap(uint8_t led_min, uint8_t led_max) {
     }
     return false;
 }
-#endif  // RGB_MATRIX_ENABLE
+#endif // RGB_MATRIX_ENABLE
