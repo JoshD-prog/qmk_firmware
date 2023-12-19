@@ -30,4 +30,3 @@
 #define NO_USB_STARTUP_CHECK
 
 #define VIM_FOR_ALL
->>>>>>>> fc1f16561d (update config):keyboards/gmmk/pro/rev1/ansi/keymaps/timepants/config.h
