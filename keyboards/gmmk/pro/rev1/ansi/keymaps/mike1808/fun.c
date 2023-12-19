@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "timepants.h"
+#include "mike1808.h"
 #include "print.h"
 
 static bool wpm_rgb_enabled = false;
