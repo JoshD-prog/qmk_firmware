@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "timepants.h"
+#include "mike1808.h"
 #include "print.h"
 #include "process_record.h"
-#include "qmk-vim/src/vim.h"
 
 uint16_t copy_paste_timer;
 
@@ -31,20 +30,23 @@ __attribute__((weak)) bool process_record_fun(uint16_t keycode, keyrecord_t *rec
     return true;
 }
 
-__attribute__((weak)) void keyboard_post_init_encoder(void) {
-    return;
-}
+__attribute__((weak)) void keyboard_post_init_encoder(void) { return; }
 
 static const char *git_commands[] = {
-    "git init ", "git clone ", "git config --global ", "git add ", "git diff ", "git reset ", "git rebase ", "git branch -b \"", "git checkout ", "git merge ", "git remote add ", "git fetch ", "git pull ", "git push ", "git commit ", "git status ", "git log ",
+    "git init ",     "git clone ", "git config --global ", "git add ",
+    "git diff ",     "git reset ", "git rebase ",          "git branch -b \"",
+    "git checkout ", "git merge ", "git remote add ",      "git fetch ",
+    "git pull ",     "git push ",  "git commit ",          "git status ",
+    "git log ",
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // If console is enabled, it will print the matrix position and status of each key pressed
-
 #ifdef KEYLOGGER_ENABLE
-    uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %b, time: %5u, int: %b, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
-#endif // KEYLOGGER_ENABLE
+    uprintf("KL: kc: 0x%04X, col: %2u, row: %2u, pressed: %b, time: %5u, int: %b, count: %u\n",
+            keycode, record->event.key.col, record->event.key.row, record->event.pressed,
+            record->event.time, record->tap.interrupted, record->tap.count);
+#endif  // KEYLOGGER_ENABLE
     switch (keycode) {
         case KC_LINUX ... KC_WIN:
             if (record->event.pressed) {
@@ -54,33 +56,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
 
             break;
-        case TOG_VIM:
-            if (record->event.pressed) {
-                if (layer_state_is(MACOS)) {
-                    toggle_vim_for_mac();
-                } else {
-                    toggle_vim_mode();
-                }
-                if (vim_mode_enabled()) {
-                    layer_on(VIM_N);
-                } else {
-                    layer_off(VIM_N);
-                    layer_off(VIM_I);
-                    layer_off(VIM_V);
-                }
-            }
-            return false;
-        case KC_CCCV: // One key copy/paste
+
+        case KC_CCCV:  // One key copy/paste
             if (record->event.pressed) {
                 copy_paste_timer = timer_read();
             } else {
-                if (timer_elapsed(copy_paste_timer) > TAPPING_TERM) { // Hold, copy
+                if (timer_elapsed(copy_paste_timer) > TAPPING_TERM) {  // Hold, copy
                     if (layer_state_is(MACOS)) {
                         tap_code16(LGUI(KC_C));
                     } else {
                         tap_code16(LCTL(KC_C));
                     }
-                } else { // Tap, paste
+                } else {  // Tap, paste
                     if (layer_state_is(MACOS)) {
                         tap_code16(LGUI(KC_V));
                     } else {
@@ -122,12 +109,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;
-#endif // RGB_MATRIX_ENABLE
+#endif  // RGB_MATRIX_ENABLE
     }
 
-    return process_vim_mode(keycode, record) && process_record_encoder(keycode, record) && process_record_secrets(keycode, record) && process_record_fun(keycode, record);
+    return process_record_encoder(keycode, record) && process_record_secrets(keycode, record) &&
+           process_record_fun(keycode, record);
 }
 
-void keyboard_post_init_user(void) {
-    keyboard_post_init_encoder();
-}
+void keyboard_post_init_user(void) { keyboard_post_init_encoder(); }
