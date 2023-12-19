@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "encoder.h"
-#include "timepants.h"
+#include "mike1808.h"
 #include "print.h"
 #include "utils.h"
 #include "process_record.h"
