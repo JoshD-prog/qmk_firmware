@@ -15,10 +15,7 @@
  */
 
 #pragma once
-<<<<<<<< HEAD:quantum/process_keycode/process_default_layer.h
-========
 #include "timepants.h"
->>>>>>>> fc1f16561d (update config):keyboards/gmmk/pro/rev1/ansi/keymaps/timepants/process_record.h
 
 #include <stdint.h>
 #include <stdbool.h>
