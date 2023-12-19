@@ -1,4 +1,4 @@
-/* Copyright 2023 Nebuleon
+/* Copyright 2023 GSKY <gskyGit@gsky.com.tw>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,17 +15,13 @@
  */
 
 #pragma once
-<<<<<<<< HEAD:quantum/process_keycode/process_default_layer.h
-========
-#include "timepants.h"
->>>>>>>> fc1f16561d (update config):keyboards/gmmk/pro/rev1/ansi/keymaps/timepants/process_record.h
 
-#include <stdint.h>
-#include <stdbool.h>
-#include "action.h"
+#include "quantum.h"
 
-#if !defined(NO_ACTION_LAYER)
-
-bool process_default_layer(uint16_t keycode, keyrecord_t *record);
-
-#endif // !defined(NO_ACTION_LAYER)
+enum my_keycodes {
+    RGB_R = QK_KB,
+    RGB_G,
+    RGB_B,
+    RGB_W,
+    SW_cy,
+};
