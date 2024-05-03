@@ -33,6 +33,7 @@ enum key_layers {
 #define SELA G(KC_A)
 #define UNDO G(KC_Z)
 #define REDO G(S(KC_Z))
+#define C_RY TD(CTRL_SPTLGHT)
 
 #define WCOPY C(KC_C)
 #define WPSTE C(KC_V)
@@ -54,7 +55,7 @@ enum key_layers {
 #define C_LEFT C(KC_LEFT)
 #define C_RGHT C(KC_RGHT)
 #define CAX LCA(KC_X)
-#define CGRV C(KC_GRV)
+#define WMUTE C(A(KC_GRV))
 
 #define ____ KC_TRNS
 
@@ -68,6 +69,34 @@ enum custom_keycodes {
     EM3,
     EM4
 };
+
+// Tap Dance keycodes
+enum td_keycodes {
+    CTRL_SPTLGHT // Our example key: `LALT` when held, `(` when tapped. Add additional keycodes for each tapdance.
+};
+
+// Define a type containing as many tapdance states as you need
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_SINGLE_TAP
+} td_state_t;
+
+// Create a global instance of the tapdance state type
+static td_state_t td_state;
+
+// Declare your tapdance functions:
+
+// Function to determine the current tapdance state
+td_state_t cur_dance(tap_dance_state_t *state);
+
+// `finished` and `reset` functions for each tapdance keycode
+void altlp_finished(tap_dance_state_t *state, void *user_data);
+void altlp_reset(tap_dance_state_t *state, void *user_data);
+
+
 #if (__has_include("secrets.h") && !defined(NO_SECRETS))
 #    include "secrets.h"
 #else
@@ -96,7 +125,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,                        KC_B,   KC_M,    KC_W,    KC_V,   KC_Z,
                  KC_RALT, KC_DEL,                                                       KC_SLSH, KC_GRV,
                                    SH_ESC, KC_LGUI, TFUNCS,    KC_BSPC, KC_SPC, KC_RSFT,
-                                   KC_LCTL,  RAISE,                      LOWER,  EFUNCS
+                                   C_RY,  RAISE,                      LOWER,  EFUNCS
     ),
     [_WINDOWS] = LAYOUT(
         KC_QUOT, KC_COMM,  KC_DOT, KC_P,   KC_Y,                        KC_F,   KC_G,    KC_C,    KC_R,   KC_L,
@@ -125,7 +154,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_FUNCS] = LAYOUT(
        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                 KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10, 
-        COPY,   PASTE,     CUT,    SELA,     CAX,                  CGRV,  C_LEFT,  C_DOWN,    C_UP,  C_RGHT,
+        COPY,   PASTE,     CUT,    SELA,  SCRSHT,                 WMUTE,  C_LEFT,  C_DOWN,    C_UP,  C_RGHT,
         UNDO,    REDO,    ____,   KC_F11, KC_F12,               KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, KC_VOLD,
                  ____,   SWIND,                                                    OS_STR,    ____,
                                    ____,    ____, KC_TAB,    ____, ____,    ____,
@@ -133,7 +162,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_WFUNCS] = LAYOUT(
        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                 KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10, 
-       WCOPY,   WPSTE,    WCUT,   WSELA,     CAX,                  CGRV,  C_LEFT,  C_DOWN,    C_UP,  C_RGHT,
+       WCOPY,   WPSTE,    WCUT,   WSELA,     CAX,                 WMUTE,  C_LEFT,  C_DOWN,    C_UP,  C_RGHT,
        WUNDO,   WREDO,    ____,   KC_F11, KC_F12,               KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, KC_VOLD,
                 CALTD,   SBASE,                                                    OS_STR,    ____,
                                    ____,    ____, KC_TAB,    ____, ____,    ____,
@@ -156,6 +185,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                    ____,    ____,                  ____,    ____
     )
 };
+
+
 
 // Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
 const rgblight_segment_t PROGMEM my_layer0_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_GREEN});
@@ -192,3 +223,56 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     rgblight_set_layer_state(6, layer_state_cmp(state, _WFUNCS));
     return state;
 }
+
+
+// Determine the tapdance state to return
+td_state_t cur_dance(tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
+        else return TD_SINGLE_HOLD;
+    }
+
+    if (state->count == 2) return TD_DOUBLE_SINGLE_TAP;
+    else return TD_UNKNOWN; // Any number higher than the maximum state value you return above
+}
+
+// Handle the possible states for each tapdance keycode you define:
+
+void altlp_finished(tap_dance_state_t *state, void *user_data) {
+    td_state = cur_dance(state);
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            register_code16(G(KC_SPC));
+            break;
+        case TD_SINGLE_HOLD:
+            register_mods(MOD_BIT(KC_LCTL)); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
+            break;
+        case TD_DOUBLE_SINGLE_TAP: // Allow nesting of 2 parens `((` within tapping term
+            tap_code16(G(KC_SPC));
+            register_code16(G(KC_SPC));
+            break;
+        default:
+            break;
+    }
+}
+
+void altlp_reset(tap_dance_state_t *state, void *user_data) {
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            unregister_code16(G(KC_SPC));
+            break;
+        case TD_SINGLE_HOLD:
+            unregister_mods(MOD_BIT(KC_LCTL)); // For a layer-tap key, use `layer_off(_MY_LAYER)` here
+            break;
+        case TD_DOUBLE_SINGLE_TAP:
+            unregister_code16(G(KC_SPC));
+            break;
+        default:
+            break;
+    }
+}
+
+// Define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
+tap_dance_action_t tap_dance_actions[] = {
+    [CTRL_SPTLGHT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, altlp_finished, altlp_reset)
+};

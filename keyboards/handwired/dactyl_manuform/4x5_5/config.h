@@ -12,3 +12,6 @@
 #define RGBLIGHT_LIMIT_VAL 50
 
 #define MACRO_TIMER 5
+
+#define TAPPING_TERM 175
+#define TAPPING_TERM_PER_KEY
