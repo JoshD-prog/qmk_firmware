@@ -5,3 +5,10 @@
 
 #define EE_HANDS
 #define SPLIT_USB_DETECT
+
+#define WS2812_DI_PIN F5
+#define RGBLIGHT_LAYERS
+#define RGBLIGHT_DEFAULT_VAL 50
+#define RGBLIGHT_LIMIT_VAL 50
+
+#define MACRO_TIMER 5

@@ -5,50 +5,190 @@
 
 enum key_layers {
     _BASE,
-    _COLEMAK,
+    _WINDOWS,
     _RAISE,
-    _LOWER
+    _LOWER,
+    _FUNCS,
+    _WFUNCS,
+    _STR,
+    _TRANS
 };
 
+
+#define SBASE DF(_BASE)
+#define SWIND DF(_WINDOWS)
 #define RAISE MO(_RAISE)
 #define LOWER MO(_LOWER)
+#define TFUNCS LT(_FUNCS, KC_TAB)
+#define EFUNCS LT(_FUNCS, KC_ENT)
+#define TWFUNCS LT(_WFUNCS, KC_TAB)
+#define EWFUNCS LT(_WFUNCS, KC_ENT)
+#define OS_STR OSL(_STR)
+
+#define CALTD LCA(KC_DEL)
+
+#define COPY G(KC_C)
+#define PASTE G(KC_V)
+#define CUT G(KC_C)
+#define SELA G(KC_A)
+#define UNDO G(KC_Z)
+#define REDO G(S(KC_Z))
+
+#define WCOPY C(KC_C)
+#define WPSTE C(KC_V)
+#define WCUT C(KC_C)
+#define WSELA C(KC_A)
+#define WUNDO C(KC_Z)
+#define WREDO C(KC_Y)
+
+#define A_UP A(KC_UP)
+#define A_DOWN A(KC_DOWN)
+#define A_LEFT A(KC_LEFT)
+#define A_RGHT A(KC_RGHT)
+#define SCRSHT S(C(G(KC_4)))
+
+
 #define SH_ESC SFT_T(KC_ESC)
+#define C_UP C(KC_UP)
+#define C_DOWN C(KC_DOWN)
+#define C_LEFT C(KC_LEFT)
+#define C_RGHT C(KC_RGHT)
+#define CAX LCA(KC_X)
+#define CGRV C(KC_GRV)
+
 #define ____ KC_TRNS
+
+enum custom_keycodes {
+    PW1 = SAFE_RANGE,
+    PW2,
+    PW3,
+    PW4,
+    EM1,
+    EM2,
+    EM3,
+    EM4
+};
+#if (__has_include("secrets.h") && !defined(NO_SECRETS))
+#    include "secrets.h"
+#else
+// `PROGMEM const char secret[][x]` may work better, but it takes up more space in the firmware
+// And I'm not familiar enough to know which is better or why...
+static const char *const secrets[] = {"", "\n", "\n", "\n", "", "", "", ""};
+#endif
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+            case PW1 ... EM1: // Secrets!  Externally defined strings, not stored in repo
+            if (!record->event.pressed) {
+                // clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+                send_string_with_delay(secrets[keycode - PW1], MACRO_TIMER);
+            }
+            return false;
+            break;
+    }
+    return true;
+};
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
-        KC_Q,    KC_W,    KC_E,    KC_R,   KC_T,                        KC_Y,   KC_U,    KC_I,    KC_O,   KC_P,
-        KC_A,    KC_S,    KC_D,    KC_F,   KC_G,                        KC_H,   KC_J,    KC_K,    KC_L,   KC_SCLN,
-        KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,                        KC_N,   KC_M,    KC_COMM, KC_DOT, KC_SLSH,
-                 KC_LBRC, KC_RBRC,                                                       KC_QUOT, KC_GRV,
-                                   SH_ESC, KC_LGUI, KC_TAB,    KC_RSFT, KC_SPC, KC_BSPC,
-                                   RAISE,  KC_LCTL,                     LOWER,  KC_ENT
+        KC_QUOT, KC_COMM,  KC_DOT, KC_P,   KC_Y,                        KC_F,   KC_G,    KC_C,    KC_R,   KC_L,
+        KC_A,    KC_O,    KC_E,    KC_U,   KC_I,                        KC_D,   KC_H,    KC_T,    KC_N,   KC_S,
+        KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,                        KC_B,   KC_M,    KC_W,    KC_V,   KC_Z,
+                 KC_RALT, KC_DEL,                                                       KC_SLSH, KC_GRV,
+                                   SH_ESC, KC_LGUI, TFUNCS,    KC_BSPC, KC_SPC, KC_RSFT,
+                                   KC_LCTL,  RAISE,                      LOWER,  EFUNCS
     ),
-   
-    [_COLEMAK] = LAYOUT(
-        KC_Q,    KC_W,    KC_F,    KC_P,   KC_G,                  KC_J,   KC_L, KC_U,    KC_Y,   KC_SCLN,
-        KC_A,    KC_R,    KC_S,    KC_T,   KC_D,                  KC_H,   KC_N, KC_E,    KC_I,   KC_O,
-        KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,                  KC_K,   KC_M, KC_COMM, KC_DOT, KC_SLSH,
-                 KC_LBRC, KC_RBRC,                                              KC_QUOT, KC_GRV,
-                                   KC_ESC, ____,  ____,     ____, ____,   ____,
-                                   ____,   ____,                  ____,   ____
+    [_WINDOWS] = LAYOUT(
+        KC_QUOT, KC_COMM,  KC_DOT, KC_P,   KC_Y,                        KC_F,   KC_G,    KC_C,    KC_R,   KC_L,
+        KC_A,    KC_O,    KC_E,    KC_U,   KC_I,                        KC_D,   KC_H,    KC_T,    KC_N,   KC_S,
+        KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,                        KC_B,   KC_M,    KC_W,    KC_V,   KC_Z,
+                 KC_RALT, KC_DEL,                                                       KC_SLSH, KC_GRV,
+                                   SH_ESC, KC_LCTL, TWFUNCS,    KC_BSPC, KC_SPC, KC_RSFT,
+                                   KC_LGUI,  RAISE,                      LOWER,  EWFUNCS
     ),
-
     [_RAISE] = LAYOUT(
         KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                  KC_6,    KC_7,    KC_8,    KC_9,    KC_0,
-     S(KC_9), S(KC_0), KC_LCBR, KC_RCBR,  KC_EQL,               KC_MINS,    KC_4,    KC_5,    KC_6, KC_QUOT,
-      QK_RBT, QK_BOOT, KC_LBRC, KC_RBRC,    ____,                  ____,    KC_1,    KC_2,    KC_3,    ____,
-                 ____,    ____,                                                      KC_0,  KC_DOT,
+     S(KC_9), S(KC_0), KC_LBRC, KC_RBRC,  KC_EQL,               KC_MINS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT,
+        ____,    ____, KC_LCBR, KC_RCBR, KC_PLUS,               KC_UNDS, KC_BSLS, KC_PIPE,    ____,    ____,
+                 ____,    ____,                                                      ____,    ____,
                                    ____,    ____,  ____,     ____, ____,    ____,
                                    ____,    ____,                  ____,    ____
     ),
 
     [_LOWER] = LAYOUT(
      KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,               KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN,
-     S(KC_9), S(KC_0), KC_LBRC, KC_RBRC,  KC_EQL,                  ____, KC_MINS,  KC_EQL, KC_PIPE,    ____,
-        ____,    ____,    ____,    ____,    ____,                  ____, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT,
-                 ____,    ____,                                                    KC_QUOT, KC_GRV,
+     S(KC_9), S(KC_0), KC_LCBR, KC_RCBR, KC_PLUS,               KC_UNDS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT,
+        ____,    ____, KC_LBRC, KC_RBRC,  KC_EQL,               KC_MINS, KC_PIPE, KC_BSLS,    ____,    ____,
+                 ____,    ____,                                                      ____,    ____,
+                                   ____,    ____,  ____,     ____, ____,    ____,
+                                   ____,    ____,                  ____,    ____
+    ),
+    [_FUNCS] = LAYOUT(
+       KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                 KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10, 
+        COPY,   PASTE,     CUT,    SELA,     CAX,                  CGRV,  C_LEFT,  C_DOWN,    C_UP,  C_RGHT,
+        UNDO,    REDO,    ____,   KC_F11, KC_F12,               KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, KC_VOLD,
+                 ____,   SWIND,                                                    OS_STR,    ____,
+                                   ____,    ____, KC_TAB,    ____, ____,    ____,
+                                   ____,  QK_RBT,               QK_BOOT,    ____
+    ),
+    [_WFUNCS] = LAYOUT(
+       KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                 KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10, 
+       WCOPY,   WPSTE,    WCUT,   WSELA,     CAX,                  CGRV,  C_LEFT,  C_DOWN,    C_UP,  C_RGHT,
+       WUNDO,   WREDO,    ____,   KC_F11, KC_F12,               KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, KC_VOLD,
+                CALTD,   SBASE,                                                    OS_STR,    ____,
+                                   ____,    ____, KC_TAB,    ____, ____,    ____,
+                                   ____,  QK_RBT,               QK_BOOT,    ____
+    ),
+    [_STR] = LAYOUT(
+         PW1,     PW2,     PW3,     PW4,    ____,                   EM1,     EM2,     EM3,     EM4,    ____,
+        ____,    ____,    ____,    ____,    ____,                  ____,    ____,    ____,    ____,    ____,
+        ____,    ____,    ____,    ____,    ____,                  ____,    ____,    ____,    ____,    ____,
+                 ____,    ____,                                                      ____,    ____,
+                                   ____,    ____,  ____,     ____, ____,    ____,
+                                   ____,    ____,                  ____,    ____
+    ),
+    [_TRANS] = LAYOUT(
+        ____,    ____,    ____,    ____,    ____,                  ____,    ____,    ____,    ____,    ____,
+        ____,    ____,    ____,    ____,    ____,                  ____,    ____,    ____,    ____,    ____,
+        ____,    ____,    ____,    ____,    ____,                  ____,    ____,    ____,    ____,    ____,
+                 ____,    ____,                                                      ____,    ____,
                                    ____,    ____,  ____,     ____, ____,    ____,
                                    ____,    ____,                  ____,    ____
     )
 };
+
+// Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
+const rgblight_segment_t PROGMEM my_layer0_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_GREEN});
+const rgblight_segment_t PROGMEM my_layer1_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_CYAN});
+const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_PURPLE});
+const rgblight_segment_t PROGMEM my_layer3_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_WHITE});
+const rgblight_segment_t PROGMEM my_layer4_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_RED});
+const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_YELLOW});
+const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_BLUE});
+
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(my_layer0_layer, my_layer1_layer, my_layer2_layer, my_layer3_layer, my_layer4_layer, my_layer5_layer, my_layer6_layer);
+
+void keyboard_post_init_user(void) {
+    // Enable the LED layers
+    rgblight_layers = my_rgb_layers;
+}
+
+// bool led_update_user(led_t led_state) {
+//     rgblight_set_layer_state(0, led_state.caps_lock);
+//     return true;
+// }
+
+layer_state_t default_layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(0, layer_state_cmp(state, _BASE));
+    rgblight_set_layer_state(5, layer_state_cmp(state, _WINDOWS));
+    return state;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(1, layer_state_cmp(state, _RAISE));
+    rgblight_set_layer_state(2, layer_state_cmp(state, _LOWER));
+    rgblight_set_layer_state(3, layer_state_cmp(state, _FUNCS));
+    rgblight_set_layer_state(4, layer_state_cmp(state, _STR));   
+    rgblight_set_layer_state(6, layer_state_cmp(state, _WFUNCS));
+    return state;
+}
