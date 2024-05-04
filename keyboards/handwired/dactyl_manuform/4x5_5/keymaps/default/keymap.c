@@ -154,7 +154,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_FUNCS] = LAYOUT(
        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                 KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10, 
-        COPY,   PASTE,     CUT,    SELA,  SCRSHT,                 WMUTE,  A_LEFT,  A_DOWN,    A_UP,  A_RGHT,
+        COPY,   PASTE,     CUT,    SELA,     CAX,                 WMUTE,  A_LEFT,  A_DOWN,    A_UP,  A_RGHT,
         UNDO,    REDO,    ____,   KC_F11, KC_F12,               KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, KC_VOLD,
                  ____,   SWIND,                                                    OS_STR,    ____,
                                    ____,    ____, KC_TAB,    ____, ____,    ____,
