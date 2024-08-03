@@ -64,10 +64,12 @@ enum custom_keycodes {
     PW2,
     PW3,
     PW4,
+    PW5,
     EM1,
     EM2,
     EM3,
-    EM4
+    EM4,
+    EM5
 };
 
 // Tap Dance keycodes
@@ -102,11 +104,11 @@ void altlp_reset(tap_dance_state_t *state, void *user_data);
 #else
 // `PROGMEM const char secret[][x]` may work better, but it takes up more space in the firmware
 // And I'm not familiar enough to know which is better or why...
-static const char *const secrets[] = {"", "\n", "\n", "\n", "", "", "", ""};
+// static const char *const secrets[] = {"", "\n", "\n", "\n", "", "", "", ""};
 #endif
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-            case PW1 ... EM1: // Secrets!  Externally defined strings, not stored in repo
+            case PW1 ... EM5: // Secrets!  Externally defined strings, not stored in repo
             if (!record->event.pressed) {
                 // clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
                 send_string_with_delay(secrets[keycode - PW1], MACRO_TIMER);
@@ -169,7 +171,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                    ____,  QK_RBT,               QK_BOOT,    ____
     ),
     [_STR] = LAYOUT(
-         PW1,     PW2,     PW3,     PW4,    ____,                   EM1,     EM2,     EM3,     EM4,    ____,
+         PW1,     PW2,     PW3,     PW4,     PW5,                   EM1,     EM2,     EM3,     EM4,     EM5,
         ____,    ____,    ____,    ____,    ____,                  ____,    ____,    ____,    ____,    ____,
         ____,    ____,    ____,    ____,    ____,                  ____,    ____,    ____,    ____,    ____,
                  ____,    ____,                                                      ____,    ____,
