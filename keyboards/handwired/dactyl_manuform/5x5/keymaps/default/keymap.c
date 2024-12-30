@@ -50,7 +50,6 @@ enum key_layers {
 
 
 #define SH_ESC SFT_T(KC_ESC)
-#define SH_TAB SFT_T(KC_TAB)
 #define C_UP C(KC_UP)
 #define C_DOWN C(KC_DOWN)
 #define C_LEFT C(KC_LEFT)
@@ -123,11 +122,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
-        KC_QUOT, KC_COMM,  KC_DOT, KC_P,   KC_Y,                        KC_F,   KC_G,    KC_C,    KC_R,   KC_L,
+        KC_Q,    KC_W,    KC_E,    KC_R,   KC_T,                        KC_F,   KC_G,    KC_C,    KC_R,   KC_L,
         KC_A,    KC_O,    KC_E,    KC_U,   KC_I,                        KC_D,   KC_H,    KC_T,    KC_N,   KC_S,
         KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,                        KC_B,   KC_M,    KC_W,    KC_V,   KC_Z,
                  KC_RALT, KC_DEL,                                                       KC_SLSH, KC_GRV,
-                                   SH_ESC, KC_LGUI, TFUNCS,    KC_BSPC, KC_SPC, SH_TAB,
+                                   SH_ESC, KC_LGUI, TFUNCS,    KC_BSPC, KC_SPC, KC_RSFT,
                                    C_RY,  RAISE,                      LOWER,  EFUNCS
     ),
     [_WINDOWS] = LAYOUT(
@@ -135,7 +134,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_A,    KC_O,    KC_E,    KC_U,   KC_I,                        KC_D,   KC_H,    KC_T,    KC_N,   KC_S,
         KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,                        KC_B,   KC_M,    KC_W,    KC_V,   KC_Z,
                  KC_RALT, KC_DEL,                                                       KC_SLSH, KC_GRV,
-                                   SH_ESC, KC_LCTL, TWFUNCS,    KC_BSPC, KC_SPC, SH_TAB,
+                                   SH_ESC, KC_LCTL, TWFUNCS,    KC_BSPC, KC_SPC, KC_RSFT,
                                    KC_LGUI,  RAISE,                      LOWER,  EWFUNCS
     ),
     [_RAISE] = LAYOUT(
@@ -149,8 +148,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_LOWER] = LAYOUT(
      KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,               KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN,
-     S(KC_9), S(KC_0), KC_LBRC, KC_RBRC,  KC_EQL,               KC_MINS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT,
-        ____,    ____, KC_LCBR, KC_RCBR, KC_PLUS,               KC_UNDS, KC_BSLS, KC_PIPE,    ____,    ____,
+     S(KC_9), S(KC_0), KC_LCBR, KC_RCBR, KC_PLUS,               KC_UNDS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT,
+        ____,    ____, KC_LBRC, KC_RBRC,  KC_EQL,               KC_MINS, KC_PIPE, KC_BSLS,    ____,    ____,
                  ____,    ____,                                                      ____,    ____,
                                    ____,    ____,  ____,     ____, ____,    ____,
                                    ____,    ____,                  ____,    ____
@@ -166,7 +165,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_WFUNCS] = LAYOUT(
        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                 KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10, 
        WCOPY,   WPSTE,    WCUT,   WSELA,     CAX,                 WMUTE,  C_LEFT,  C_DOWN,    C_UP,  C_RGHT,
-       WUNDO,   WREDO,    ____,   KC_F11, KC_F12,               KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLD, KC_VOLU,
+       WUNDO,   WREDO,    ____,   KC_F11, KC_F12,               KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, KC_VOLD,
                 CALTD,   SBASE,                                                    OS_STR,    ____,
                                    ____,    ____, KC_TAB,    ____, ____,    ____,
                                    ____,  QK_RBT,               QK_BOOT,    ____
