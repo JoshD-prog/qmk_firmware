@@ -8,3 +8,4 @@ The following layout is supported:
 
 
 qmk compile -kb handwired/dactyl_manuform/4x5_5 -km default
+qmk flash -kb handwired/dactyl_manuform/4x5_5 -km default
