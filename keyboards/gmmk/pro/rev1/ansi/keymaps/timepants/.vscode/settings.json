@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "timepants.h": "c",
-        "rgb_matrix_ledmaps.h": "c",
-        "vim.h": "c"
-    },
-    "C_Cpp.errorSquiggles": "disabled"
-}

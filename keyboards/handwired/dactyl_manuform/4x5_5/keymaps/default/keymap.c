@@ -73,7 +73,8 @@ enum custom_keycodes {
     EM2,
     EM3,
     EM4,
-    EM5
+    EM5,
+    C_SPT
 };
 
 // Tap Dance keycodes
@@ -92,8 +93,7 @@ typedef enum {
     TD_DOUBLE_SINGLE_TAP
 } td_state_t;
 
-// Create a global instance of the tapdance state type
-static td_state_t td_state;
+// Create a global instance of the tapdance state typea
 static td_state_t rl_state;
 static td_state_t ll_state;
 
@@ -109,6 +109,15 @@ void rl_finished(tap_dance_state_t *state, void *user_data);
 void rl_reset(tap_dance_state_t *state, void *user_data);
 void ll_finished(tap_dance_state_t *state, void *user_data);
 void ll_reset(tap_dance_state_t *state, void *user_data);
+
+
+
+#define TIME_LIMIT 500
+
+uint16_t key_timer; // declare key_timer for use in macro
+
+bool other_key_pressed;
+
 
 #if (__has_include("secrets.h") && !defined(NO_SECRETS))
 #    include "secrets.h"
@@ -126,8 +135,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
             break;
+              // tap for (, hold for (_) (both on release)
+            case C_SPT: {
+                if (record->event.pressed) {
+                key_timer = timer_read();
+                other_key_pressed = false;
+                register_mods(MOD_BIT(KC_LCTL));
+                } else { // Release the key
+                unregister_mods(MOD_BIT(KC_LCTL));
+                if (timer_elapsed(key_timer) < TAPPING_TERM && !other_key_pressed) {
+                    register_code16(G(KC_SPC));
+                }
+                }
+                return false;
+                break;
+            }
     }
     if (!record->event.pressed) {
+        if (keycode != C_SPT) {
+            other_key_pressed = true;
+        }
         // clear_oneshot_layer_state(ONESHOT_PRESSED);
     }
     return true;
@@ -141,7 +168,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,                        KC_B,   KC_M,    KC_W,    KC_V,   KC_Z,
                  KC_RALT, KC_TAB,                                                       KC_SLSH, KC_GRV,
                                    SH_ESC, KC_LGUI, TFUNCS,    KC_BSPC, KC_SPC, KC_LSFT,
-                                   C_RY,  RAISE,                      LOWER,  EFUNCS
+                                   C_SPT,  RAISE,                      LOWER,  EFUNCS
     ),
     [_WINDOWS] = LAYOUT(
         KC_QUOT, KC_COMM,  KC_DOT, KC_P,   KC_Y,                        KC_F,   KC_G,    KC_C,    KC_R,   KC_L,
@@ -270,40 +297,6 @@ td_state_t cur_dance(tap_dance_state_t *state) {
 
 // Handle the possible states for each tapdance keycode you define:
 
-void altlp_finished(tap_dance_state_t *state, void *user_data) {
-    td_state = cur_dance(state);
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            register_code16(G(KC_SPC));
-            break;
-        case TD_SINGLE_HOLD:
-            register_mods(MOD_BIT(KC_LCTL)); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
-            break;
-        // case TD_DOUBLE_SINGLE_TAP: // Allow nesting of 2 parens `((` within tapping term
-        //     tap_code16(G(KC_SPC));
-        //     register_code16(G(KC_SPC));
-        //     break;
-        default:
-            break;
-    }
-}
-
-void altlp_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            unregister_code16(G(KC_SPC));
-            break;
-        case TD_SINGLE_HOLD:
-            unregister_mods(MOD_BIT(KC_LCTL)); // For a layer-tap key, use `layer_off(_MY_LAYER)` here
-            break;
-        // case TD_DOUBLE_SINGLE_TAP:
-        //     unregister_code16(G(KC_SPC));
-        //     break;
-        default:
-            break;
-    }
-}
-
 // Functions that control what our tap dance key does
 void rl_finished(tap_dance_state_t *state, void *user_data) {
     rl_state = cur_dance(state);
@@ -376,8 +369,7 @@ void ll_reset(tap_dance_state_t *state, void *user_data) {
 
 // Define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
 tap_dance_action_t tap_dance_actions[] = {
-    // [CTRL_SPTLGHT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, altlp_finished, altlp_reset),
-    [CTRL_SPTLGHT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, altlp_finished, altlp_reset),
     [TD_RAISE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rl_finished, rl_reset),
     [TD_LOWER] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ll_finished, ll_reset),
 };
+ 
