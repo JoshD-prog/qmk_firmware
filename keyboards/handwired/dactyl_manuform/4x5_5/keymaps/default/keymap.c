@@ -211,15 +211,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 
+#define HSV_RED1          2, 245, 255
+#define HSV_RED2          5, 235, 255
+#define HSV_RED3          7, 230, 255
 
+#define HSV_BLUE1        170, 200, 255
+#define HSV_BLUE2        170, 120, 255
+#define HSV_BLUE3        170, 90, 255
 // Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
-const rgblight_segment_t PROGMEM my_layer0_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 4, HSV_BLUE},{5, 8, HSV_RED});
+const rgblight_segment_t PROGMEM my_layer0_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 4, HSV_RED},{4, 8, HSV_BLUE});
 const rgblight_segment_t PROGMEM my_layer1_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_GREEN});
-const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_CYAN});
-const rgblight_segment_t PROGMEM my_layer3_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_PINK});
-const rgblight_segment_t PROGMEM my_layer4_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_CORAL});
-const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_RED});
-const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_WHITE});
+const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 4, HSV_RED1},{4, 8, HSV_RED});
+const rgblight_segment_t PROGMEM my_layer3_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 4, HSV_BLUE},{4, 8, HSV_BLUE1});
+const rgblight_segment_t PROGMEM my_layer4_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 1, HSV_RED3},{1, 2, HSV_RED2},{2, 3, HSV_RED1},{3, 4, HSV_RED},{4, 5, HSV_BLUE3},{5, 6, HSV_BLUE2},{6, 7, HSV_BLUE1},{7, 8, HSV_BLUE});
+const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_BLACK});
+const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_CORAL});
 const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_GOLD});
 
 const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(my_layer0_layer, my_layer1_layer, my_layer2_layer, my_layer3_layer, my_layer4_layer, my_layer5_layer, my_layer6_layer, my_layer7_layer);
@@ -370,6 +376,7 @@ void ll_reset(tap_dance_state_t *state, void *user_data) {
 
 // Define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
 tap_dance_action_t tap_dance_actions[] = {
+    // [CTRL_SPTLGHT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, altlp_finished, altlp_reset),
     [CTRL_SPTLGHT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, altlp_finished, altlp_reset),
     [TD_RAISE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rl_finished, rl_reset),
     [TD_LOWER] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ll_finished, ll_reset),
