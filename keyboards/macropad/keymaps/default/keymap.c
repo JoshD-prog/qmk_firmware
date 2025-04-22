@@ -11,13 +11,11 @@ enum custom_keycodes { LAYER0 = SAFE_RANGE, LAYER1, LAYER2, LAYER3, LAYER4, LAYE
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    [_LAYER0] = LAYOUT(
-                        C(KC_F), LCA(KC_X), C(KC_GRV), TO(1), 
-                        C(KC_S), KC_LPRN, KC_RPRN, TO(2), 
-                        C(KC_Z), C(KC_Y), KC_DEL, TO(3), 
-                        C(KC_C), C(KC_V), C(KC_A), TO(4)
-                        ),
 
+    [_LAYER0] = LAYOUT(KC_7, KC_8, KC_9, TO(1), 
+    KC_4, KC_5, KC_6, TO(2), 
+    KC_1, KC_2, KC_3, TO(3), 
+    KC_0, KC_DOT, KC_ENT, TO(4)),
     [_LAYER1] = LAYOUT(QK_BOOT, QK_BOOT, QK_BOOT, TG(1), 
     QK_BOOT, QK_BOOT, QK_BOOT, KC_TRNS,
      QK_BOOT, QK_BOOT, QK_BOOT, KC_TRNS, 
@@ -33,14 +31,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_HOME, C(KC_UP), KC_END, TG(3), 
     C(KC_LEFT), C(KC_DOWN), C(KC_RIGHT), KC_TRNS),
 
-    [_LAYER4] = LAYOUT(KC_P7, KC_P8, KC_P9, KC_TRNS, 
-    KC_P4, KC_P5, KC_P6, KC_TRNS, 
-    KC_P1, KC_P2, KC_P3, KC_TRNS, 
-    KC_P0, MO(5), KC_PENT, TG(4)),
+    [_LAYER4] = LAYOUT(
+    C(KC_F), LCA(KC_X), C(KC_GRV), KC_TRNS, 
+    C(KC_S), KC_LPRN, KC_RPRN, KC_TRNS, 
+    C(KC_Z), C(KC_Y), KC_DEL, KC_TRNS, 
+    C(KC_C), C(KC_V), C(KC_A), TG(4)
+    ),
 
     [_LAYER5] = LAYOUT(KC_LNUM, KC_PSLS, KC_PAST, KC_TRNS, 
     KC_TRNS, KC_PMNS, KC_PPLS, KC_TRNS, 
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, 
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
     KC_TRNS, KC_NO, KC_PEQL, KC_TRNS)
 
 };

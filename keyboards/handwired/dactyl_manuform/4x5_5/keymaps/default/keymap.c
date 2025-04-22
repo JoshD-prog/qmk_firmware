@@ -8,6 +8,7 @@ enum key_layers {
     _RAISE,
     _LOWER,
     _FUNCS,
+    _FUNCS_LOWER,
     _STR,
     _LEADER1,
     _LEADER2,
@@ -15,7 +16,7 @@ enum key_layers {
     _TRANS
 };
 
-#define TFUNCS LT(_FUNCS, KC_TAB)
+#define TFUNCS LT(_FUNCS_LOWER, KC_TAB)
 #define EFUNCS LT(_FUNCS, KC_ENT)
 #define OS_STR OSL(_STR)
 #define LEADER OSL(_LEADER)
@@ -148,15 +149,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [_BASE] = LAYOUT(
+     [_BASE] = LAYOUT(
         KC_QUOT, KC_COMM,  KC_DOT, KC_P,   KC_Y,                        KC_F,   KC_G,    KC_C,    KC_R,   KC_L,
         KC_A,    KC_O,    KC_E,    KC_U,   KC_I,                        KC_D,   KC_H,    KC_T,    KC_N,   KC_S,
         KC_SCLN, KC_Q,    KC_J,    KC_K,   KC_X,                        KC_B,   KC_M,    KC_W,    KC_V,   KC_Z,
                  KC_RALT, KC_TAB,                                                       KC_SLSH, KC_GRV,
                                    SH_ESC, KC_LGUI, TFUNCS,    KC_BSPC, KC_SPC, KC_LSFT,
                                    C_SPT,  RAISE,                      LOWER,  EFUNCS
-    ),
-   /*  [_BASE] = LAYOUT(
+    ), 
+    /*
+    [_BASE] = LAYOUT(
         KC_Q, KC_W,  KC_E, KC_R,   KC_T,                        KC_Y,   KC_U,    KC_I,    KC_O,   KC_P,
         KC_A,    KC_S,    KC_D,    KC_F,   KC_G,                        KC_H,   KC_J,    KC_K,    KC_L,   KC_SCLN,
         KC_Z, KC_X,    KC_C,    KC_V,   KC_B,                        KC_N,   KC_M,    KC_COMM,   KC_DOT,   KC_SLSH,
@@ -185,9 +187,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                 KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10, 
         COPY,   PASTE,     CUT,    SELA,     CAX,               KC_LCTL,  C_LEFT,  C_DOWN,    C_UP,  C_RGHT,
         UNDO,    REDO,    ____,   KC_F11, KC_F12,               KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLD, KC_VOLU,
-                 ____,    KC_DEL,                                                    OS_STR,    ____,
+                 ____,    KC_DEL,                                                  OS_STR,    ____,
                                    ____,    ____, KC_TAB,    ____, ____,    ____,
-                                   ____,  QK_RBT,               QK_BOOT,    ____
+                                   ____,  ____,               QK_BOOT,    ____
+    ),
+    [_FUNCS_LOWER] = LAYOUT(
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                 KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10,
+        COPY,   PASTE,     CUT,    SELA,     CAX,                  ____, MS_LEFT, MS_DOWN,   MS_UP, MS_RGHT,
+        UNDO,    REDO,    ____,    KC_F11, KC_F12,                 ____,    ____,    ____,    ____,    ____,
+                MS_WHLU,  MS_WHLD,                                               MS_WHLD, MS_WHLU,
+                                QK_BOOT,   ____, ____,      MS_ACL0, MS_ACL1, MS_ACL2,
+                                   ____,  ____,                 MS_BTN1, MS_BTN2
     ),
     [_STR] = LAYOUT(
          PW1,     PW2,     PW3,     PW4,     PW5,                   EM1,     EM2,     EM3,     EM4,     EM5,
@@ -232,26 +242,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 
-#define HSV_L0          0, 255, 255
-#define HSV_L1          2, 245, 255
-#define HSV_L2          5, 235, 255
-#define HSV_L3          7, 230, 255
+#define HSV_L0         85, 255, 255
+#define HSV_L1         80, 245, 255
+#define HSV_L2         80, 235, 255
+#define HSV_L3         80, 230, 255
 
-#define HSV_R0           170, 255, 255
-#define HSV_R1        170, 200, 255
-#define HSV_R2        170, 120, 255
-#define HSV_R3        170, 90, 255
+#define HSV_R0         43, 255, 255
+#define HSV_R1         40, 245, 255
+#define HSV_R2         40, 235, 255
+#define HSV_R3         40, 230, 255
 
 const rgblight_segment_t PROGMEM led0[] = RGBLIGHT_LAYER_SEGMENTS({0, 4, HSV_L0},{4, 8, HSV_R0});
 const rgblight_segment_t PROGMEM led1[] = RGBLIGHT_LAYER_SEGMENTS({0, 4, HSV_L0},{4, 8, HSV_L1});
 const rgblight_segment_t PROGMEM led2[] = RGBLIGHT_LAYER_SEGMENTS({0, 4, HSV_R1},{4, 8, HSV_R0});
-const rgblight_segment_t PROGMEM led3[] = RGBLIGHT_LAYER_SEGMENTS({0, 1, HSV_L3},{1, 2, HSV_L2},{2, 3, HSV_L1},{3, 4, HSV_RED},{4, 5, HSV_R3},{5, 6, HSV_R2},{6, 7, HSV_R1},{7, 8, HSV_BLUE});
-const rgblight_segment_t PROGMEM led4[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_BLACK});
-const rgblight_segment_t PROGMEM led5[] = RGBLIGHT_LAYER_SEGMENTS({0, 1, HSV_L0},{1, 4, HSV_BLACK},{4, 5, HSV_R0},{5, 8, HSV_BLACK});
-const rgblight_segment_t PROGMEM led6[] = RGBLIGHT_LAYER_SEGMENTS({0, 2, HSV_L0},{2, 4, HSV_BLACK},{4, 6, HSV_R0},{6, 8, HSV_BLACK});
-const rgblight_segment_t PROGMEM led7[] = RGBLIGHT_LAYER_SEGMENTS({0, 3, HSV_L0},{3, 4, HSV_BLACK},{4, 7, HSV_R0},{7, 8, HSV_BLACK});
+const rgblight_segment_t PROGMEM led3[] = RGBLIGHT_LAYER_SEGMENTS({0, 1, HSV_L3},{1, 2, HSV_L2},{2, 3, HSV_L1},{3, 4, HSV_L0},{4, 5, HSV_R3},{5, 6, HSV_R2},{6, 7, HSV_R1},{7, 8, HSV_R0});
+const rgblight_segment_t PROGMEM led4[] = RGBLIGHT_LAYER_SEGMENTS({0, 1, HSV_R3},{1, 2, HSV_R2},{2, 3, HSV_R1},{3, 4, HSV_R0},{4, 5, HSV_L3},{5, 6, HSV_L2},{6, 7, HSV_L1},{7, 8, HSV_L0});
+const rgblight_segment_t PROGMEM led5[] = RGBLIGHT_LAYER_SEGMENTS({0, 8, HSV_BLACK});
+const rgblight_segment_t PROGMEM led6[] = RGBLIGHT_LAYER_SEGMENTS({0, 1, HSV_L0},{1, 4, HSV_BLACK},{4, 5, HSV_R0},{5, 8, HSV_BLACK});
+const rgblight_segment_t PROGMEM led7[] = RGBLIGHT_LAYER_SEGMENTS({0, 2, HSV_L0},{2, 4, HSV_BLACK},{4, 6, HSV_R0},{6, 8, HSV_BLACK});
+const rgblight_segment_t PROGMEM led8[] = RGBLIGHT_LAYER_SEGMENTS({0, 3, HSV_L0},{3, 4, HSV_BLACK},{4, 7, HSV_R0},{7, 8, HSV_BLACK});
 
-const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(led0, led1, led2, led3, led4, led5, led6, led7);
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(led0, led1, led2, led3, led4, led5, led6, led7, led8);
 
 void keyboard_post_init_user(void) {
     // Enable the LED layers
@@ -272,10 +283,11 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     rgblight_set_layer_state(1, layer_state_cmp(state, _RAISE));
     rgblight_set_layer_state(2, layer_state_cmp(state, _LOWER));
     rgblight_set_layer_state(3, layer_state_cmp(state, _FUNCS));
-    rgblight_set_layer_state(4, layer_state_cmp(state, _STR));   
-    rgblight_set_layer_state(5, layer_state_cmp(state, _LEADER1));
-    rgblight_set_layer_state(6, layer_state_cmp(state, _LEADER2));    
-    rgblight_set_layer_state(7, layer_state_cmp(state, _LEADER3));    
+    rgblight_set_layer_state(4, layer_state_cmp(state, _FUNCS_LOWER));
+    rgblight_set_layer_state(5, layer_state_cmp(state, _STR));   
+    rgblight_set_layer_state(6, layer_state_cmp(state, _LEADER1));
+    rgblight_set_layer_state(7, layer_state_cmp(state, _LEADER2));    
+    rgblight_set_layer_state(8, layer_state_cmp(state, _LEADER3));    
     return state;
 }
 

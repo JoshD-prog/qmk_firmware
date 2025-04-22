@@ -10,5 +10,6 @@ NKRO_ENABLE = yes           # Enable N-Key Rollover
 RGBLIGHT_ENABLE = yes        # Enable keyboard RGB underglow
 AUDIO_ENABLE = no           # Audio output
 SPLIT_KEYBOARD = yes
+MOUSEKEY_ENABLE = yes
 TAP_DANCE_ENABLE = yes
 DYNAMIC_MACRO_ENABLE = no
